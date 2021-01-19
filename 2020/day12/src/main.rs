@@ -28,4 +28,12 @@ fn main() {
             ship.perform(action, value)
         });
     println!("Manhattan distance is {}", ship.get_manhattan_distance());
+
+    let ship = actions
+        .iter()
+        .cloned()
+        .fold(Ship::new(), |ship, (action, value)| {
+            ship.perform_by_waypoint(action, value)
+        });
+    println!("Manhattan distance is {}", ship.get_manhattan_distance());
 }

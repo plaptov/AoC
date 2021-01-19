@@ -35,21 +35,83 @@ impl Direction {
     }
 }
 
-impl From<&Direction> for Action {
-    fn from(d: &Direction) -> Self {
-        match d {
-            Direction::North => Action::North,
-            Direction::South => Action::South,
-            Direction::East => Action::East,
-            Direction::West => Action::West,
+impl From<Action> for Direction {
+    fn from(a: Action) -> Self {
+        match a {
+            Action::North => Direction::North,
+            Action::South => Direction::South,
+            Action::East => Direction::East,
+            Action::West => Direction::West,
+            _ => panic!("unexpected action"),
         }
     }
 }
 
+trait Position {
+    fn get_position(&self) -> (i32, i32);
+    fn move_to(&self, direction: Direction, value: i32) -> (i32, i32) {
+        let (mut x, mut y) = self.get_position();
+        match direction {
+            Direction::North => y -= value,
+            Direction::South => y += value,
+            Direction::East => x += value,
+            Direction::West => x -= value,
+        }
+        (x, y)
+    }
+}
+
+struct Waypoint {
+    x: i32,
+    y: i32,
+}
+
+impl Waypoint {
+    fn new() -> Self {
+        Self { x: 10, y: -1 }
+    }
+
+    fn rotate(self, degrees: i32) -> Self {
+        let steps = (degrees / 90).abs();
+        let (mut x, mut y) = (self.x, self.y);
+        for _ in 0..steps {
+            let pt = if degrees < 0 {
+                Self::rotate_counter_clockwise_90(x, y)
+            } else {
+                Self::rotate_clockwise_90(x, y)
+            };
+            x = pt.0;
+            y = pt.1;
+        }
+        Self { x, y }
+    }
+
+    fn rotate_clockwise_90(x: i32, y: i32) -> (i32, i32) {
+        (-y, x)
+    }
+
+    fn rotate_counter_clockwise_90(x: i32, y: i32) -> (i32, i32) {
+        (y, -x)
+    }
+}
+
+impl Position for Waypoint {
+    fn get_position(&self) -> (i32, i32) {
+        (self.x, self.y)
+    }
+}
+
 pub struct Ship {
-    pub direction: Direction,
-    pub x: i32,
-    pub y: i32,
+    direction: Direction,
+    x: i32,
+    y: i32,
+    waypoint: Waypoint,
+}
+
+impl Position for Ship {
+    fn get_position(&self) -> (i32, i32) {
+        (self.x, self.y)
+    }
 }
 
 impl Ship {
@@ -58,6 +120,7 @@ impl Ship {
             direction: Direction::East,
             x: 0,
             y: 0,
+            waypoint: Waypoint::new(),
         }
     }
 
@@ -67,22 +130,6 @@ impl Ship {
 
     pub fn perform(self, action: Action, value: u32) -> Self {
         match action {
-            Action::North => Self {
-                y: self.y - value as i32,
-                ..self
-            },
-            Action::South => Self {
-                y: self.y + value as i32,
-                ..self
-            },
-            Action::East => Self {
-                x: self.x + value as i32,
-                ..self
-            },
-            Action::West => Self {
-                x: self.x - value as i32,
-                ..self
-            },
             Action::Left => Self {
                 direction: self.direction.rotate(-(value as i32)),
                 ..self
@@ -92,8 +139,37 @@ impl Ship {
                 ..self
             },
             Action::Forward => {
-                let d = (&self.direction).into();
-                self.perform(d, value)
+                let (x, y) = self.move_to(self.direction, value as i32);
+                Self { x, y, ..self }
+            }
+            a => {
+                let (x, y) = self.move_to(a.into(), value as i32);
+                Self { x, y, ..self }
+            }
+        }
+    }
+
+    pub fn perform_by_waypoint(self, action: Action, value: u32) -> Self {
+        match action {
+            Action::Left => Self {
+                waypoint: self.waypoint.rotate(-(value as i32)),
+                ..self
+            },
+            Action::Right => Self {
+                waypoint: self.waypoint.rotate(value as i32),
+                ..self
+            },
+            Action::Forward => {
+                let x = self.x + self.waypoint.x * value as i32;
+                let y = self.y + self.waypoint.y * value as i32;
+                Self { x, y, ..self }
+            }
+            a => {
+                let (x, y) = self.waypoint.move_to(a.into(), value as i32);
+                Self {
+                    waypoint: Waypoint { x, y },
+                    ..self
+                }
             }
         }
     }
