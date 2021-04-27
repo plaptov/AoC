@@ -3,9 +3,9 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-const NO_BAGS: &'static str = "no other bags.";
-const COLORED_BAGS: &'static str = r"(\w+ \w+) bag";
-const NUMBER_OF_BAGS: &'static str = concatcp!(r"(\d+) ", COLORED_BAGS);
+const NO_BAGS: &str = "no other bags.";
+const COLORED_BAGS: &str = r"(\w+ \w+) bag";
+const NUMBER_OF_BAGS: &str = concatcp!(r"(\d+) ", COLORED_BAGS);
 
 lazy_static! {
     static ref COLORED_BAGS_REGEX: Regex = Regex::new(COLORED_BAGS).unwrap();

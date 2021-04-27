@@ -19,8 +19,8 @@ impl<'a> Passport<'a> {
     pub fn new(lines: &'a [String]) -> Self {
         let mut data = HashMap::new();
         for line in lines {
-            for part in line.split(" ") {
-                let mut key_value = part.split(":");
+            for part in line.split(' ') {
+                let mut key_value = part.split(':');
                 let key = key_value.next().unwrap();
                 let value = key_value.next().unwrap();
                 data.insert(key, value);
@@ -50,7 +50,7 @@ impl<'a> Passport<'a> {
             return false;
         }
         let year = i32::from_str(value).unwrap();
-        1920 <= year && year <= 2002
+        (1920..=2002).contains(&year)
     }
 
     fn is_issue_year_valid(&self) -> bool {
@@ -59,7 +59,7 @@ impl<'a> Passport<'a> {
             return false;
         }
         let year = i32::from_str(value).unwrap();
-        2010 <= year && year <= 2020
+        (2010..=2020).contains(&year)
     }
 
     fn is_expiry_year_valid(&self) -> bool {
@@ -68,7 +68,7 @@ impl<'a> Passport<'a> {
             return false;
         }
         let year = i32::from_str(value).unwrap();
-        2020 <= year && year <= 2030
+        (2020..=2030).contains(&year)
     }
 
     fn is_height_valid(&self) -> bool {
@@ -79,9 +79,9 @@ impl<'a> Passport<'a> {
         let (val, unit) = value.split_at(value.len() - 2);
         let height = i32::from_str(val).unwrap();
         if unit == "cm" {
-            150 <= height && height <= 193
+            (150..=193).contains(&height)
         } else {
-            59 <= height && height <= 76
+            (59..=76).contains(&height)
         }
     }
 

@@ -24,6 +24,6 @@ fn main() {
         println!("Encountered {} trees", count);
     }
 
-    let result = &counts.iter().fold(1, |acc, c| acc * c);
+    let result: &usize = &counts.iter().product();
     println!("Final result: {}", result);
 }

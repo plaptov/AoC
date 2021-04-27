@@ -8,9 +8,9 @@ pub struct OldPolicy {
 
 impl OldPolicy {
     pub fn new(s: &str) -> Self {
-        let splitted: Vec<&str> = s.split(" ").collect();
+        let splitted: Vec<&str> = s.split(' ').collect();
         let letter = splitted[1].chars().next().unwrap();
-        let splitted: Vec<&str> = splitted[0].split("-").collect();
+        let splitted: Vec<&str> = splitted[0].split('-').collect();
         let min = i32::from_str(&splitted[0]).unwrap();
         let max = i32::from_str(&splitted[1]).unwrap();
         OldPolicy { min, max, letter }
