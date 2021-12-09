@@ -26,7 +26,6 @@ impl FromStr for Move {
 pub fn day2_fun() {
     let bytes: &[u8] = include_bytes!("input.txt");
     let moves: Vec<(Move, i32)> = read_lines(bytes)
-        .iter()
         .map(|s| {
             let (s1, s2) = s.split_once(&" ").unwrap();
             (s1.parse().unwrap(), s2.parse().unwrap())

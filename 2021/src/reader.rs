@@ -1,6 +1,6 @@
 use std::io::{BufRead, BufReader};
 
-pub fn read_lines(bytes: &[u8]) -> Vec<String> {
+pub fn read_lines(bytes: &'static [u8]) -> impl Iterator<Item = String> {
     let buffered = BufReader::new(bytes);
-    buffered.lines().map(|line| line.unwrap()).collect()
+    buffered.lines().map(move |line| line.unwrap())
 }

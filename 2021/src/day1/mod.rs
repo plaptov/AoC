@@ -4,8 +4,7 @@ use std::{collections::VecDeque, str::FromStr};
 pub fn day1_fun() {
     let bytes: &[u8] = include_bytes!("input.txt");
     let numbers = read_lines(&bytes)
-        .iter()
-        .map(|l| i32::from_str(l).unwrap())
+        .map(|l| i32::from_str(&l).unwrap())
         .collect::<Vec<i32>>();
     let mut prev = i32::MAX;
     let mut count = 0;
