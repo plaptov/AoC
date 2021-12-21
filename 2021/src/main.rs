@@ -4,10 +4,11 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6;
 mod reader;
 
 fn main() {
-    run(5)
+    run(6)
 }
 
 fn run(day: i32) {
@@ -17,6 +18,7 @@ fn run(day: i32) {
         3 => day3::day3_fun(),
         4 => day4::day4_fun(),
         5 => day5::day5_fun(),
+        6 => day6::day6_fun(),
         _ => {}
     }
 }
